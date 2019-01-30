@@ -96,9 +96,9 @@ public final class InstallNodeAndYarnMojo extends AbstractFrontendMojo {
                 .setPassword(server.getPassword()).install();
         } else {
             factory.getNodeInstaller(proxyConfig).setNodeDownloadRoot(this.nodeDownloadRoot)
-                .setNodeVersion(this.nodeVersion).install();
+                .setNodeVersion(this.nodeVersion).setAddNodeToPath(nodeAsGlobal).install();
             factory.getYarnInstaller(proxyConfig).setYarnDownloadRoot(this.yarnDownloadRoot)
-                .setYarnVersion(this.yarnVersion).install();
+                .setYarnVersion(this.yarnVersion).setAddYarnToPath(yarnAsGlobal).install();
         }
     }
 

@@ -97,7 +97,6 @@ public final class InstallNodeAndNpmMojo extends AbstractFrontendMojo {
             factory.getNodeInstaller(proxyConfig)
                 .setNodeVersion(nodeVersion)
                 .setNodeDownloadRoot(nodeDownloadRoot)
-                .setAddNodeToPath(nodeAsGlobal)
                 .install();
             factory.getNPMInstaller(proxyConfig)
                 .setNodeVersion(this.nodeVersion)
