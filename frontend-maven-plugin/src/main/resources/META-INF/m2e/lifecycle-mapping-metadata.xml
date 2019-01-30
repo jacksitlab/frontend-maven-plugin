@@ -20,6 +20,7 @@
                 <goals>
                     <goal>npm</goal>
                     <goal>yarn</goal>
+                    <goal>lerna</goal>
                     <goal>gulp</goal>
                     <goal>grunt</goal>
                     <goal>bower</goal>

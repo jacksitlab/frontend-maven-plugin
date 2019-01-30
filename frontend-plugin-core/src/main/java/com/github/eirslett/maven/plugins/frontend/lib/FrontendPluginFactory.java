@@ -48,6 +48,9 @@ public final class FrontendPluginFactory {
     public YarnRunner getYarnRunner(ProxyConfig proxy, String npmRegistryURL) {
         return new DefaultYarnRunner(new InstallYarnExecutorConfig(getInstallConfig()), proxy, npmRegistryURL);
     }
+    public LernaRunner getLernaRunner(ProxyConfig proxy, String npmRegistryURL) {
+        return new DefaultLernaRunner(new InstallLernaExecutorConfig(getInstallConfig()), proxy, npmRegistryURL);
+    }
 
     public GruntRunner getGruntRunner(){
         return new DefaultGruntRunner(getExecutorConfig());
