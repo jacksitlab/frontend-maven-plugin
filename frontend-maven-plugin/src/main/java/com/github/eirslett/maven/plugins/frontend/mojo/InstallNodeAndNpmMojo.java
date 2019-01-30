@@ -48,7 +48,7 @@ public final class InstallNodeAndNpmMojo extends AbstractFrontendMojo {
      */
     @Parameter(property = "npmVersion", required = false, defaultValue = "provided")
     private String npmVersion;
-
+   
     /**
      * Server Id for download username and password
      */
@@ -97,7 +97,7 @@ public final class InstallNodeAndNpmMojo extends AbstractFrontendMojo {
             factory.getNodeInstaller(proxyConfig)
                 .setNodeVersion(nodeVersion)
                 .setNodeDownloadRoot(nodeDownloadRoot)
-                .setNpmVersion(npmVersion)
+                .setAddNodeToPath(nodeAsGlobal)
                 .install();
             factory.getNPMInstaller(proxyConfig)
                 .setNodeVersion(this.nodeVersion)

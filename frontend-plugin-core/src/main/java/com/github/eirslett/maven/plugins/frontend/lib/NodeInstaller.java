@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ public class NodeInstaller {
     private final ArchiveExtractor archiveExtractor;
 
     private final FileDownloader fileDownloader;
+
+    private boolean addToPath;
 
     NodeInstaller(InstallConfig config, ArchiveExtractor archiveExtractor, FileDownloader fileDownloader) {
         this.logger = LoggerFactory.getLogger(getClass());
@@ -59,12 +62,17 @@ public class NodeInstaller {
         return this;
     }
 
+    public NodeInstaller setAddNodeToPath(boolean nodeAsGlobal) {
+        this.addToPath = nodeAsGlobal;
+        return this;
+    }
+
     private boolean npmProvided() throws InstallationException {
         if (this.npmVersion != null) {
             if ("provided".equals(this.npmVersion)) {
                 if (Integer.parseInt(this.nodeVersion.replace("v", "").split("[.]")[0]) < 4) {
-                    throw new InstallationException("NPM version is '" + this.npmVersion
-                        + "' but Node didn't include NPM prior to v4.0.0");
+                    throw new InstallationException(
+                            "NPM version is '" + this.npmVersion + "' but Node didn't include NPM prior to v4.0.0");
                 }
                 return true;
             }
@@ -102,15 +110,19 @@ public class NodeInstaller {
             NodeExecutorConfig executorConfig = new InstallNodeExecutorConfig(this.config);
             File nodeFile = executorConfig.getNodePath();
             if (nodeFile.exists()) {
-                final String version =
-                    new NodeExecutor(executorConfig, Arrays.asList("--version"), null).executeAndGetResult(logger);
+                Map<String, String> additionalPaths = null;
+                if (this.addToPath) {
+                    additionalPaths = new HashMap<String, String>();
+                    additionalPaths.put("yarn", nodeFile.getAbsolutePath());
+                }
+                final String version = new NodeExecutor(executorConfig, Arrays.asList("--version"), additionalPaths)
+                        .executeAndGetResult(logger);
 
                 if (version.equals(this.nodeVersion)) {
                     this.logger.info("Node {} is already installed.", version);
                     return true;
                 } else {
-                    this.logger.info("Node {} was installed, but we need version {}", version,
-                        this.nodeVersion);
+                    this.logger.info("Node {} was installed, but we need version {}", version, this.nodeVersion);
                     return false;
                 }
             } else {
@@ -123,16 +135,15 @@ public class NodeInstaller {
 
     private void installNodeDefault() throws InstallationException {
         try {
-            final String longNodeFilename =
-                this.config.getPlatform().getLongNodeFilename(this.nodeVersion, false);
-            String downloadUrl = this.nodeDownloadRoot
-                + this.config.getPlatform().getNodeDownloadFilename(this.nodeVersion, false);
+            final String longNodeFilename = this.config.getPlatform().getLongNodeFilename(this.nodeVersion, false);
+            String downloadUrl =
+                    this.nodeDownloadRoot + this.config.getPlatform().getNodeDownloadFilename(this.nodeVersion, false);
             String classifier = this.config.getPlatform().getNodeClassifier();
 
             File tmpDirectory = getTempDirectory();
 
             CacheDescriptor cacheDescriptor = new CacheDescriptor("node", this.nodeVersion, classifier,
-                this.config.getPlatform().getArchiveExtension());
+                    this.config.getPlatform().getArchiveExtension());
 
             File archive = this.config.getCacheResolver().resolve(cacheDescriptor);
 
@@ -142,28 +153,27 @@ public class NodeInstaller {
 
             // Search for the node binary
             File nodeBinary =
-                new File(tmpDirectory, longNodeFilename + File.separator + "bin" + File.separator + "node");
+                    new File(tmpDirectory, longNodeFilename + File.separator + "bin" + File.separator + "node");
             if (!nodeBinary.exists()) {
-                throw new FileNotFoundException(
-                    "Could not find the downloaded Node.js binary in " + nodeBinary);
+                throw new FileNotFoundException("Could not find the downloaded Node.js binary in " + nodeBinary);
             } else {
                 File destinationDirectory = getInstallDirectory();
 
                 File destination = new File(destinationDirectory, "node");
                 this.logger.info("Copying node binary from {} to {}", nodeBinary, destination);
                 if (!nodeBinary.renameTo(destination)) {
-                    throw new InstallationException("Could not install Node: Was not allowed to rename "
-                        + nodeBinary + " to " + destination);
+                    throw new InstallationException(
+                            "Could not install Node: Was not allowed to rename " + nodeBinary + " to " + destination);
                 }
 
                 if (!destination.setExecutable(true, false)) {
                     throw new InstallationException(
-                        "Could not install Node: Was not allowed to make " + destination + " executable.");
+                            "Could not install Node: Was not allowed to make " + destination + " executable.");
                 }
 
                 if (npmProvided()) {
                     File tmpNodeModulesDir = new File(tmpDirectory,
-                        longNodeFilename + File.separator + "lib" + File.separator + "node_modules");
+                            longNodeFilename + File.separator + "lib" + File.separator + "node_modules");
                     File nodeModulesDirectory = new File(destinationDirectory, "node_modules");
                     File npmDirectory = new File(nodeModulesDirectory, "npm");
                     FileUtils.copyDirectory(tmpNodeModulesDir, nodeModulesDirectory);
@@ -192,16 +202,15 @@ public class NodeInstaller {
 
     private void installNodeWithNpmForWindows() throws InstallationException {
         try {
-            final String longNodeFilename =
-                this.config.getPlatform().getLongNodeFilename(this.nodeVersion, true);
-            String downloadUrl = this.nodeDownloadRoot
-                + this.config.getPlatform().getNodeDownloadFilename(this.nodeVersion, true);
+            final String longNodeFilename = this.config.getPlatform().getLongNodeFilename(this.nodeVersion, true);
+            String downloadUrl =
+                    this.nodeDownloadRoot + this.config.getPlatform().getNodeDownloadFilename(this.nodeVersion, true);
             String classifier = this.config.getPlatform().getNodeClassifier();
 
             File tmpDirectory = getTempDirectory();
 
             CacheDescriptor cacheDescriptor = new CacheDescriptor("node", this.nodeVersion, classifier,
-                this.config.getPlatform().getArchiveExtension());
+                    this.config.getPlatform().getArchiveExtension());
 
             File archive = this.config.getCacheResolver().resolve(cacheDescriptor);
 
@@ -212,21 +221,19 @@ public class NodeInstaller {
             // Search for the node binary
             File nodeBinary = new File(tmpDirectory, longNodeFilename + File.separator + "node.exe");
             if (!nodeBinary.exists()) {
-                throw new FileNotFoundException(
-                    "Could not find the downloaded Node.js binary in " + nodeBinary);
+                throw new FileNotFoundException("Could not find the downloaded Node.js binary in " + nodeBinary);
             } else {
                 File destinationDirectory = getInstallDirectory();
 
                 File destination = new File(destinationDirectory, "node.exe");
                 this.logger.info("Copying node binary from {} to {}", nodeBinary, destination);
                 if (!nodeBinary.renameTo(destination)) {
-                    throw new InstallationException("Could not install Node: Was not allowed to rename "
-                        + nodeBinary + " to " + destination);
+                    throw new InstallationException(
+                            "Could not install Node: Was not allowed to rename " + nodeBinary + " to " + destination);
                 }
 
                 if ("provided".equals(this.npmVersion)) {
-                    File tmpNodeModulesDir =
-                        new File(tmpDirectory, longNodeFilename + File.separator + "node_modules");
+                    File tmpNodeModulesDir = new File(tmpDirectory, longNodeFilename + File.separator + "node_modules");
                     File nodeModulesDirectory = new File(destinationDirectory, "node_modules");
                     FileUtils.copyDirectory(tmpNodeModulesDir, nodeModulesDirectory);
                 }
@@ -245,8 +252,8 @@ public class NodeInstaller {
     }
 
     private void installNodeForWindows() throws InstallationException {
-        final String downloadUrl = this.nodeDownloadRoot
-            + this.config.getPlatform().getNodeDownloadFilename(this.nodeVersion, false);
+        final String downloadUrl =
+                this.nodeDownloadRoot + this.config.getPlatform().getNodeDownloadFilename(this.nodeVersion, false);
         try {
             File destinationDirectory = getInstallDirectory();
 
@@ -254,8 +261,7 @@ public class NodeInstaller {
 
             String classifier = this.config.getPlatform().getNodeClassifier();
 
-            CacheDescriptor cacheDescriptor =
-                new CacheDescriptor("node", this.nodeVersion, classifier, "exe");
+            CacheDescriptor cacheDescriptor = new CacheDescriptor("node", this.nodeVersion, classifier, "exe");
 
             File binary = this.config.getCacheResolver().resolve(cacheDescriptor);
 
@@ -303,15 +309,17 @@ public class NodeInstaller {
     }
 
     private void downloadFileIfMissing(String downloadUrl, File destination, String userName, String password)
-        throws DownloadException {
+            throws DownloadException {
         if (!destination.exists()) {
             downloadFile(downloadUrl, destination, userName, password);
         }
     }
 
     private void downloadFile(String downloadUrl, File destination, String userName, String password)
-        throws DownloadException {
+            throws DownloadException {
         this.logger.info("Downloading {} to {}", downloadUrl, destination);
         this.fileDownloader.download(downloadUrl, destination.getPath(), userName, password);
     }
+
+
 }

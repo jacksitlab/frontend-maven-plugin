@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,8 @@ public class YarnInstaller {
     private final ArchiveExtractor archiveExtractor;
 
     private final FileDownloader fileDownloader;
+
+    private boolean addToPath;
 
     YarnInstaller(InstallConfig config, ArchiveExtractor archiveExtractor, FileDownloader fileDownloader) {
         logger = LoggerFactory.getLogger(getClass());
@@ -57,6 +60,11 @@ public class YarnInstaller {
         return this;
     }
 
+    public YarnInstaller setAddYarnToPath(boolean yarnAsGlobal) {
+        this.addToPath=yarnAsGlobal;
+        return this;
+    }
+
     public void install() throws InstallationException {
         // use static lock object for a synchronized block
         synchronized (LOCK) {
@@ -77,8 +85,15 @@ public class YarnInstaller {
             YarnExecutorConfig executorConfig = new InstallYarnExecutorConfig(config);
             File nodeFile = executorConfig.getYarnPath();
             if (nodeFile.exists()) {
+                
+                Map<String, String> additionalPaths=null;
+                if(this.addToPath)
+                {
+                    additionalPaths=new HashMap<String,String>();
+                    additionalPaths.put("yarn", nodeFile.getAbsolutePath());
+                }
                 final String version =
-                    new YarnExecutor(executorConfig, Arrays.asList("--version"), null).executeAndGetResult(logger).trim();
+                    new YarnExecutor(executorConfig, Arrays.asList("--version"),additionalPaths).executeAndGetResult(logger).trim();
 
                 if (version.equals(yarnVersion.replaceFirst("^v", ""))) {
                     logger.info("Yarn {} is already installed.", version);
@@ -176,4 +191,7 @@ public class YarnInstaller {
         logger.info("Downloading {} to {}", downloadUrl, destination);
         fileDownloader.download(downloadUrl, destination.getPath(), userName, password);
     }
+
+
+   
 }
