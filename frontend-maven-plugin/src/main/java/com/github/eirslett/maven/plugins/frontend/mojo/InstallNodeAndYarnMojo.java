@@ -45,18 +45,6 @@ public final class InstallNodeAndYarnMojo extends AbstractFrontendMojo {
     private String yarnVersion;
 
     /**
-     * add node path to $PATH.
-     */
-    @Parameter(property = "nodeAsGlobal", required = false, defaultValue = "false")
-    private boolean nodeAsGlobal;
-
-    /**
-     * add yarn path to $PATH.
-     */
-    @Parameter(property = "yarnAsGlobal", required = false, defaultValue = "false")
-    private boolean yarnAsGlobal;
-
-    /**
      * Server Id for download username and password
      */
     @Parameter(property = "serverId", defaultValue = "")
@@ -86,19 +74,17 @@ public final class InstallNodeAndYarnMojo extends AbstractFrontendMojo {
         if (null != server) {
             factory.getNodeInstaller(proxyConfig).setNodeDownloadRoot(this.nodeDownloadRoot)
                 .setNodeVersion(this.nodeVersion)
-                .setAddNodeToPath(nodeAsGlobal)
                 .setPassword(server.getPassword())
                 .setUserName(server.getUsername()).install();
             factory.getYarnInstaller(proxyConfig).setYarnDownloadRoot(this.yarnDownloadRoot)
                 .setYarnVersion(this.yarnVersion)
-                .setAddYarnToPath(yarnAsGlobal)
                 .setUserName(server.getUsername())
                 .setPassword(server.getPassword()).install();
         } else {
             factory.getNodeInstaller(proxyConfig).setNodeDownloadRoot(this.nodeDownloadRoot)
-                .setNodeVersion(this.nodeVersion).setAddNodeToPath(nodeAsGlobal).install();
+                .setNodeVersion(this.nodeVersion).install();
             factory.getYarnInstaller(proxyConfig).setYarnDownloadRoot(this.yarnDownloadRoot)
-                .setYarnVersion(this.yarnVersion).setAddYarnToPath(yarnAsGlobal).install();
+                .setYarnVersion(this.yarnVersion).install();
         }
     }
 

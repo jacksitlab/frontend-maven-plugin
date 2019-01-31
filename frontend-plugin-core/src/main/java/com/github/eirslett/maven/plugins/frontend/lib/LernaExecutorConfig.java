@@ -6,11 +6,17 @@ public interface LernaExecutorConfig {
 
     File getNodePath();
 
+    File getYarnPath();
+
     File getLernaPath();
 
     File getWorkingDirectory();
 
     Platform getPlatform();
+
+    /**
+     * @return
+     */
 
 }
 
@@ -37,6 +43,12 @@ final class InstallLernaExecutorConfig implements LernaExecutorConfig {
     }
 
     @Override
+    public File getYarnPath() {
+        String yarnExecutable = getPlatform().isWindows() ? InstallYarnExecutorConfig.YARN_WINDOWS : InstallYarnExecutorConfig.YARN_DEFAULT;
+        return new File(installConfig.getInstallDirectory() + yarnExecutable);
+    }
+    
+    @Override
     public File getLernaPath() {
         String lernaExecutable = getPlatform().isWindows() ? LERNA_WINDOWS : LERNA_DEFAULT;
         return new File(installConfig.getInstallDirectory() + lernaExecutable);
@@ -51,4 +63,6 @@ final class InstallLernaExecutorConfig implements LernaExecutorConfig {
     public Platform getPlatform() {
         return installConfig.getPlatform();
     }
+
+    
 }

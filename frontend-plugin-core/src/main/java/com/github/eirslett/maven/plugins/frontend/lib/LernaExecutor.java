@@ -14,7 +14,7 @@ final class LernaExecutor {
         Map<String, String> additionalEnvironment) {
         final String lerna = config.getLernaPath().getAbsolutePath();
         List<String> localPaths = new ArrayList<>();
-        localPaths.add(config.getLernaPath().getParent());
+        localPaths.add(config.getYarnPath().getParent());
         localPaths.add(config.getNodePath().getParent());
         executor = new ProcessExecutor(config.getWorkingDirectory(), localPaths,
             Utils.prepend("lerna", arguments), config.getPlatform(), additionalEnvironment);

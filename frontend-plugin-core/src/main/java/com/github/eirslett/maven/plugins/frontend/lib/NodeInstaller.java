@@ -4,12 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import jdk.internal.jline.internal.Log;
 
 public class NodeInstaller {
 
@@ -28,8 +25,6 @@ public class NodeInstaller {
     private final ArchiveExtractor archiveExtractor;
 
     private final FileDownloader fileDownloader;
-
-    private boolean addToPath;
 
     NodeInstaller(InstallConfig config, ArchiveExtractor archiveExtractor, FileDownloader fileDownloader) {
         this.logger = LoggerFactory.getLogger(getClass());
@@ -60,11 +55,6 @@ public class NodeInstaller {
 
     public NodeInstaller setPassword(String password) {
         this.password = password;
-        return this;
-    }
-
-    public NodeInstaller setAddNodeToPath(boolean nodeAsGlobal) {
-        this.addToPath = nodeAsGlobal;
         return this;
     }
 
@@ -111,14 +101,8 @@ public class NodeInstaller {
             NodeExecutorConfig executorConfig = new InstallNodeExecutorConfig(this.config);
             File nodeFile = executorConfig.getNodePath();
             if (nodeFile.exists()) {
-                Map<String, String> additionalPaths = null;
-                if (this.addToPath) {
-                    String p = nodeFile.getAbsoluteFile().getParentFile().getAbsolutePath();
-                    this.logger.info("add {} to path", p);
-                    additionalPaths = new HashMap<String, String>();
-                    additionalPaths.put("yarn", p);
-                }
-                final String version = new NodeExecutor(executorConfig, Arrays.asList("--version"), additionalPaths)
+               
+                final String version = new NodeExecutor(executorConfig, Arrays.asList("--version"), null)
                         .executeAndGetResult(logger);
 
                 if (version.equals(this.nodeVersion)) {
