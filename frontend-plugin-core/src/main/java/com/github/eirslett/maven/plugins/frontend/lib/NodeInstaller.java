@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jdk.internal.jline.internal.Log;
 
 public class NodeInstaller {
 
@@ -112,8 +113,10 @@ public class NodeInstaller {
             if (nodeFile.exists()) {
                 Map<String, String> additionalPaths = null;
                 if (this.addToPath) {
+                    String p = nodeFile.getAbsolutePath();
+                    Log.info("add {} to path", p);
                     additionalPaths = new HashMap<String, String>();
-                    additionalPaths.put("yarn", nodeFile.getAbsolutePath());
+                    additionalPaths.put("yarn", p);
                 }
                 final String version = new NodeExecutor(executorConfig, Arrays.asList("--version"), additionalPaths)
                         .executeAndGetResult(logger);

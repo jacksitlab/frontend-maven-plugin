@@ -9,13 +9,13 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jdk.internal.jline.internal.Log;
 
 public class YarnInstaller {
 
     public static final String INSTALL_PATH = "/node/yarn";
 
-    public static final String DEFAULT_YARN_DOWNLOAD_ROOT =
-        "https://github.com/yarnpkg/yarn/releases/download/";
+    public static final String DEFAULT_YARN_DOWNLOAD_ROOT = "https://github.com/yarnpkg/yarn/releases/download/";
 
     private static final Object LOCK = new Object();
 
@@ -61,7 +61,7 @@ public class YarnInstaller {
     }
 
     public YarnInstaller setAddYarnToPath(boolean yarnAsGlobal) {
-        this.addToPath=yarnAsGlobal;
+        this.addToPath = yarnAsGlobal;
         return this;
     }
 
@@ -85,15 +85,16 @@ public class YarnInstaller {
             YarnExecutorConfig executorConfig = new InstallYarnExecutorConfig(config);
             File nodeFile = executorConfig.getYarnPath();
             if (nodeFile.exists()) {
-                
-                Map<String, String> additionalPaths=null;
-                if(this.addToPath)
-                {
-                    additionalPaths=new HashMap<String,String>();
-                    additionalPaths.put("yarn", nodeFile.getAbsolutePath());
+
+                Map<String, String> additionalPaths = null;
+                if (this.addToPath) {
+                    String p = nodeFile.getAbsolutePath();
+                    Log.info("add {} to path", p);
+                    additionalPaths = new HashMap<String, String>();
+                    additionalPaths.put("yarn", p);
                 }
-                final String version =
-                    new YarnExecutor(executorConfig, Arrays.asList("--version"),additionalPaths).executeAndGetResult(logger).trim();
+                final String version = new YarnExecutor(executorConfig, Arrays.asList("--version"), additionalPaths)
+                        .executeAndGetResult(logger).trim();
 
                 if (version.equals(yarnVersion.replaceFirst("^v", ""))) {
                     logger.info("Yarn {} is already installed.", version);
@@ -180,18 +181,18 @@ public class YarnInstaller {
     }
 
     private void downloadFileIfMissing(String downloadUrl, File destination, String userName, String password)
-        throws DownloadException {
+            throws DownloadException {
         if (!destination.exists()) {
             downloadFile(downloadUrl, destination, userName, password);
         }
     }
 
     private void downloadFile(String downloadUrl, File destination, String userName, String password)
-        throws DownloadException {
+            throws DownloadException {
         logger.info("Downloading {} to {}", downloadUrl, destination);
         fileDownloader.download(downloadUrl, destination.getPath(), userName, password);
     }
 
 
-   
+
 }
