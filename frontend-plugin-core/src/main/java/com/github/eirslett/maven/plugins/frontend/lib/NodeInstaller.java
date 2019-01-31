@@ -114,7 +114,7 @@ public class NodeInstaller {
                 Map<String, String> additionalPaths = null;
                 if (this.addToPath) {
                     String p = nodeFile.getAbsolutePath();
-                    Log.info("add {} to path", p);
+                    this.logger.info("add {} to path", p);
                     additionalPaths = new HashMap<String, String>();
                     additionalPaths.put("yarn", p);
                 }
