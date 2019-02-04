@@ -24,9 +24,9 @@ public interface LernaExecutorConfig {
 final class InstallLernaExecutorConfig implements LernaExecutorConfig {
 
     private static final String LERNA_WINDOWS =
-            LernaInstaller.INSTALL_PATH.concat("/dist/bin/lerna.cmd").replaceAll("/", "\\\\");
+            LernaInstaller.INSTALL_PATH.concat("lerna.cmd").replaceAll("/", "\\\\");
 
-    private static final String LERNA_DEFAULT = LernaInstaller.INSTALL_PATH + "/dist/bin/lerna";
+    private static final String LERNA_DEFAULT = LernaInstaller.INSTALL_PATH + "lerna";
 
     private File nodePath;
 
@@ -51,7 +51,7 @@ final class InstallLernaExecutorConfig implements LernaExecutorConfig {
     @Override
     public File getLernaPath() {
         String lernaExecutable = getPlatform().isWindows() ? LERNA_WINDOWS : LERNA_DEFAULT;
-        return new File(installConfig.getInstallDirectory() + lernaExecutable);
+        return new File(installConfig.getInstallDirectory() +"node_modules/.bin/"+ lernaExecutable);
     }
 
     @Override

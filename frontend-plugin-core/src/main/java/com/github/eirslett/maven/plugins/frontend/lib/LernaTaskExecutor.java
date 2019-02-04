@@ -3,7 +3,6 @@ package com.github.eirslett.maven.plugins.frontend.lib;
 import static com.github.eirslett.maven.plugins.frontend.lib.Utils.implode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

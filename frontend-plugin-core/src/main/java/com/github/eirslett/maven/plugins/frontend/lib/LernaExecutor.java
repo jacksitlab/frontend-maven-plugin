@@ -20,7 +20,7 @@ final class LernaExecutor {
         List<String> localPaths = new ArrayList<>();
         localPaths.add(config.getYarnPath().getParent());
         localPaths.add(config.getNodePath().getParent());
-        localPaths.add("/usr/local/bin");
+        localPaths.add(config.getLernaPath().getParent());
         for(String p:localPaths) {
             this.logger.info("add {} to PATH",p);
         }
