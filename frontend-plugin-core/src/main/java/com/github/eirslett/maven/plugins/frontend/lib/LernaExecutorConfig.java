@@ -17,6 +17,11 @@ public interface LernaExecutorConfig {
     /**
      * @return
      */
+    String getLernaLocalInstallDirectoryPath();
+
+    /**
+     * @return
+     */
 
 }
 
@@ -51,7 +56,7 @@ final class InstallLernaExecutorConfig implements LernaExecutorConfig {
     @Override
     public File getLernaPath() {
         String lernaExecutable = getPlatform().isWindows() ? LERNA_WINDOWS : LERNA_DEFAULT;
-        return new File(installConfig.getInstallDirectory() +"node_modules/.bin/"+ lernaExecutable);
+        return new File(installConfig.getInstallDirectory() +"/node_modules/.bin/"+ lernaExecutable);
     }
 
     @Override
@@ -62,6 +67,11 @@ final class InstallLernaExecutorConfig implements LernaExecutorConfig {
     @Override
     public Platform getPlatform() {
         return installConfig.getPlatform();
+    }
+
+    @Override
+    public String getLernaLocalInstallDirectoryPath() {     
+        return installConfig.getInstallDirectory() +"/node_modules/.bin";
     }
 
     

@@ -16,16 +16,16 @@ final class LernaExecutor {
     public LernaExecutor(LernaExecutorConfig config, List<String> arguments,
         Map<String, String> additionalEnvironment) {
         this.logger = LoggerFactory.getLogger(getClass());
-        final String lerna = config.getLernaPath().getAbsolutePath();
+        final String lerna = config.getLernaLocalInstallDirectoryPath()+"/lerna";
         List<String> localPaths = new ArrayList<>();
         localPaths.add(config.getYarnPath().getParent());
         localPaths.add(config.getNodePath().getParent());
-        localPaths.add(config.getLernaPath().getParent());
+        localPaths.add(config.getLernaLocalInstallDirectoryPath());
         for(String p:localPaths) {
             this.logger.info("add {} to PATH",p);
         }
         executor = new ProcessExecutor(config.getWorkingDirectory(), localPaths,
-            Utils.prepend("lerna", arguments), config.getPlatform(), additionalEnvironment);
+            Utils.prepend(lerna, arguments), config.getPlatform(), additionalEnvironment);
     }
 
     public String executeAndGetResult(final Logger logger) throws ProcessExecutionException {
