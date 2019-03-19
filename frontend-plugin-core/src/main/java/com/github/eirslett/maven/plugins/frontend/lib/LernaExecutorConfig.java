@@ -14,14 +14,10 @@ public interface LernaExecutorConfig {
 
     Platform getPlatform();
 
-    /**
-     * @return
-     */
     String getLernaLocalInstallDirectoryPath();
-
-    /**
-     * @return
-     */
+  
+    String getLernaLocalInstallDirectoryPathAlt();
+  
 
 }
 
@@ -72,6 +68,10 @@ final class InstallLernaExecutorConfig implements LernaExecutorConfig {
     @Override
     public String getLernaLocalInstallDirectoryPath() {     
         return installConfig.getInstallDirectory() +"/node_modules/.bin";
+    }
+    @Override
+    public String getLernaLocalInstallDirectoryPathAlt() {     
+        return installConfig.getWorkingDirectory() +"/node_modules/.bin";
     }
 
     

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>frontend-plugins</artifactId>
     <groupId>com.github.eirslett</groupId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.7.1</version>
   </parent>
 
   <artifactId>frontend-maven-plugin</artifactId>
@@ -32,20 +32,20 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.1.0</version>
+      <version>3.6.0</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.5.0</version>
+      <version>3.6.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.2</version>
+      <version>3.6.0</version>
     </dependency>
 
     <dependency>
