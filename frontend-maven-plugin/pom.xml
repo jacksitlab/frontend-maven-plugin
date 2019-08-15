@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>frontend-plugins</artifactId>
-    <groupId>de.jacksitlab</groupId>
+    <groupId>de.jacks-it-lab</groupId>
     <version>1.7.1</version>
   </parent>
 
@@ -20,11 +21,11 @@
         for your project, install dependencies with NPM,
         install dependencies with bower or jspm, run Grunt or gulp tasks,
         and/or run Karma tests.
-    </description>
+  </description>
 
   <dependencies>
     <dependency>
-      <groupId>de.jacksitlab</groupId>
+      <groupId>de.jacks-it-lab</groupId>
       <artifactId>frontend-plugin-core</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
@@ -148,4 +149,10 @@
       </build>
     </profile>
   </profiles>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
