@@ -7,3 +7,6 @@ target
 .metadata
 .recommenders
 bin
+*.asc
+*.save
+deploy.sh
