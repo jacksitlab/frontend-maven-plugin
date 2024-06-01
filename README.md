@@ -1,3 +1,9 @@
+!This will no longer be maintained. Please go back to the original plugin. For lerna usage now executions like
+```
+yarn lerna run build
+````
+are available
+
 # frontend-maven-plugin
 
 [![Build Status OSX and Linux](https://travis-ci.org/eirslett/frontend-maven-plugin.png?branch=master)](https://travis-ci.org/eirslett/frontend-maven-plugin)
